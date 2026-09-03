@@ -206,7 +206,10 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
-
+    
+    if (path === '/' || path === '') {
+      return Response.redirect(`${url.origin}/paniel/`, 302);
+    }
     // Painel Principal de Criação de Webhooks
     if (path === '/paniel/') {
       const html = `<!DOCTYPE html>
