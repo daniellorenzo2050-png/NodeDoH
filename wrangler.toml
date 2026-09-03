@@ -1,6 +1,3 @@
-name = "nodeproxy"
+name = "nodedoh"
 main = "main.js"
 compatibility_date = "2026-03-01"
-
-[vars]
-# Defina regras ou parâmetros adicionais se necessário
