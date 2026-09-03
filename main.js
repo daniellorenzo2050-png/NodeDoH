@@ -200,16 +200,28 @@ function createBlockedResponse(queryBuffer) {
   res[8] = 0; res[9] = 0;
   res[10] = 0; res[11] = 0;
   return res.subarray(0, 12);
-}
-
-export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
-    const path = url.pathname;
-    
+    // Se acessarem a raiz sem parâmetros DoH ou POST, você pode retornar a página de status ou o próprio motor DoH
     if (path === '/' || path === '') {
-      return Response.redirect(`${url.origin}/paniel/`, 302);
+      // Se for um cliente DoH padrão fazendo GET ou POST na raiz, encaminha para a lógica do DoH
+      if (request.method === 'POST' || url.searchParams.has('dns')) {
+        // Executa a lógica de DNS que já existe no seu código
+        return handleDnsQuery(request);
+      }
+      
+      // Caso contrário, mostra uma página simples ou o status do serviço
+      return new Response(JSON.stringify({ 
+        service: 'NodeDoH-HyperApexShield',
+        status: 'online',
+        endpoints: {
+          doh: '/',
+          panel: '/paniel/',
+          health: '/healthz'
+        }
+      }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
+
     // Painel Principal de Criação de Webhooks
     if (path === '/paniel/') {
       const html = `<!DOCTYPE html>
